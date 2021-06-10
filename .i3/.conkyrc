@@ -40,16 +40,15 @@ TEXT
  [
  #{"full_text": "${exec xtitle -t 50 | tr -d '\042'}", "color":"\#FFFFFF"},
  {"full_text": "${exec bash ~/.scripts/volume.sh}", "color":"\#FFFFFF"},
- {"full_text": ${font FontAwesome:size=9}"","color":"\#FFFFFF","separator":false,"separator_block_width":6},\
- {"full_text":"${battery BAT0} ${battery BAT1} (${battery_time BAT0} ${battery_time BAT1})","color":"\#FFFFFF","separator":true},
+ #{"full_text": ${font FontAwesome:size=9}"","color":"\#FFFFFF","separator":false,"separator_block_width":6},
+ #{"full_text":"${battery BAT0} ${battery BAT1} (${battery_time BAT0} ${battery_time BAT1})","color":"\#FFFFFF","separator":true},
 
  { "full_text" : " / ${fs_free /} /home ${fs_free /home}" , "color" : "\#FFFFFF"},
 
- { "full_text" : "RAM ${memperc}%" , "color" :
-    ${if_match ${memperc}<90}"\#FFFFFF"${else}"\#ff0000"${endif} },
+ { "full_text" : "RAM ${memperc}%" , "color" : ${if_match ${memperc}<90}"\#FFFFFF"${else}"\#ff0000"${endif} },
 
 
- { "full_text" : "${time %A, %B %d, %Y}", "color" : "\#FFFFFF"},
- { "full_text" : "${time %l:%M %p} ", "color" : "\#FFFFFF"},
- { "full_text" : " ${wireless_essid}", "color" : "\#FFFFFF"}
+  { "full_text" : "${time %A, %B %d, %Y}", "color" : "\#FFFFFF"},
+  { "full_text" : "${time %l:%M %p} ", "color" : "\#FFFFFF"}
+ #{ "full_text" : " ${wireless_essid}", "color" : "\#FFFFFF"}
     ],

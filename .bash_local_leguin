@@ -1,0 +1,3 @@
+eval $(keychain --eval --quiet id_ed25519)
+
+export SOUND_CARD="2"

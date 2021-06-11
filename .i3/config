@@ -77,6 +77,10 @@ bindsym $mod+Shift+Down move down
 bindsym $mod+Shift+Up move up
 bindsym $mod+Shift+Right move right
 
+# move focused window between monitors
+bindsym $mod+Shift+greater move container to output right
+bindsym $mod+Shift+less move container to output left
+
 # split in horizontal orientation
 bindsym $mod+Shift+v split h
 
@@ -203,6 +207,20 @@ bar {
 	font pango:Terminus, FontAwesome 10
         #status_command i3status
 	status_command ~/.i3/.conkyi3
+	output primary
+	tray_output primary
+	position top
+	colors {
+	       focused_workspace #ffffff #5487ff #ffffff
+	       inactive_workspace #453422 #223344 #ffffff
+	}
+}
+
+bar {
+	font pango:Terminus, FontAwesome 10
+        #status_command i3status
+	output DP-4
+	tray_output none
 	position top
 	colors {
 	       focused_workspace #ffffff #5487ff #ffffff

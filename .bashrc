@@ -70,8 +70,4 @@ fi
 # Start X at login
 #[[ -z $DISPLAY && $XDG_VTNR -eq 1 ]] && exec startx
 
-# Other files ########################################################
-. ~/.bash_aliases        # Bash aliases
-. ~/.bash_local          # Local settings
-
 # LS_COLORS=$LS_COLORS:'di=1;44:' ; export LS_COLORS

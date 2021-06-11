@@ -17,3 +17,6 @@ export XDG_CONFIG_HOME
 
 [[ -f ~/.bashrc ]] && . ~/.bashrc
 
+# Other files ########################################################
+. ~/.bash_aliases        # Bash aliases
+. ~/.bash_local          # Local settings

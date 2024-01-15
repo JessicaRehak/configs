@@ -1,7 +1,7 @@
 # This is Git's per-user configuration file.
 [user]
-	name = Joshua Rehak
-	email = jsrehak@gmail.com
+	name = Jessica Rehak
+	email = jessica.s.rehak@gmail.com
 [alias]
 	co = checkout
 	ci = commit

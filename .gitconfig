@@ -17,3 +17,6 @@
 	ui = auto
 [core]
 	excludesfile = ~/.global-gitignore
+
+[init]
+	defaultBranch = main

@@ -1,0 +1,22 @@
+# This is Git's per-user configuration file.
+[user]
+	name = Jessica Rehak
+	email = rehak@lbl.gov
+[alias]
+	co = checkout
+	ci = commit
+	st = status
+	br = branch
+	po = push origin
+	poh = push origin HEAD
+	unstage = reset HEAD --
+	last = log -1 HEAD
+	logg = log --graph --pretty=short --all --abbrev-commit --oneline
+	graph = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all --use-mailmap
+[color]
+	ui = auto
+[core]
+	excludesfile = ~/.global-gitignore
+
+[init]
+	defaultBranch = main

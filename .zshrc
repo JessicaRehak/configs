@@ -15,12 +15,14 @@ esac
 # Prompt #############################################################
 
 # Load in the git branch prompt and autocompletion script.
-fpath=(~/.scripts $fpath)
-zstyle ':completion:*:*:git:*' script ~/.scripts/git-completion.bash
-. ~/.scripts/git-prompt.sh
+# zstyle ':completion:*:*:git:*' script ~/.scripts/git-completion.bash
+# fpath=(~/.scripts $fpath)
+autoload -Uz compinit && compinit
 
-setopt PROMPT_SUBST
-PS1='[%n@%m %~$(__git_ps1 " (%s)")]\$ '
+# . ~/.scripts/git-prompt.sh
+
+#setopt PROMPT_SUBST
+#PS1='[%n@%m %~$(__git_ps1 " (%s)")]\$ '
 
 . ~/.zsh_aliases        # Aliases
 

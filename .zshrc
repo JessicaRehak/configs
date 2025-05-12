@@ -25,6 +25,7 @@ autoload -Uz compinit && compinit
 #PS1='[%n@%m %~$(__git_ps1 " (%s)")]\$ '
 
 . ~/.zsh_aliases        # Aliases
+. ~/.zsh_local
 
 source /opt/powerlevel10k/powerlevel10k.zsh-theme
 

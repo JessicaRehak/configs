@@ -2,8 +2,8 @@
 import sys
 import shutil
 import subprocess
+from typing import List
 
-# --- ANSI Color Codes for pretty printing ---
 class Colors:
     GREEN = '\033[92m'
     YELLOW = '\033[93m'
@@ -12,10 +12,23 @@ class Colors:
     BOLD = '\033[1m'
     END = '\033[0m'
 
+def _is_installed(binary: str) -> bool:
+    return shutil.which(binary) is not None
+
+PACKAGE_INSTALL = None
+if _is_installed('apt'):
+    PACKAGE_INSTALL = "apt install"
+elif _is_installed('dnf'):
+    PACKAGE_INSTALL = "dnf install"
+
+def _package_install(executable: str) -> List[str] | None:
+    if PACKAGE_INSTALL is None:
+        return None
+    return ["sudo"] + PACKAGE_INSTALL.split(" ") + [executable]
+
 # ==============================================================================
-# === CONFIGURE YOUR TOOLS HERE ================================================
+# === TOOLS ====================================================================
 # ==============================================================================
-# This is the only part you need to edit. Add any tool you want to track.
 #
 # - name:           The display name of the tool.
 # - executable:     The command name to check for on the system's PATH.
@@ -30,35 +43,38 @@ TOOLS = [
         "name": "ncdu",
         "executable": "ncdu",
         "description": "NCurses Disk Usage analyzer. Great for finding large files.",
-        "install_method": "apt",
-        "install_cmd": ["sudo", "apt", "install", "-y", "ncdu"],
+        "install_method": "package",
+        "install_cmd": _package_install("ncdu"),
         "install_shell": False,
     },
     {
         "name": "dops",
         "executable": "dops",
         "description": "A tool for interacting with DigitalOcean droplets.",
-        "install_method": "script",
-        "install_cmd": "curl -sL https://install.doctor.sh | bash -s -- --tool dops",
-        "install_shell": True, # This one-liner requires a shell
+        "install_method": "package",
+        "install_cmd": 'sudo wget "https://github.com/Mikescher/better-docker-ps/releases/latest/download/dops_linux-amd64-static" -O "/usr/local/bin/dops" && sudo chmod +x "/usr/local/bin/dops"',
+        "install_shell": True, 
     },
     {
         "name": "tldr",
         "executable": "tldr",
         "description": "Simplified and community-driven man pages.",
-        "install_method": "apt",
-        "install_cmd": ["sudo", "apt", "install", "-y", "tldr"],
+        "install_method": "package",
+        "install_cmd": _package_install("tldr"),
         "install_shell": False,
     },
     {
         "name": "htop",
         "executable": "htop",
         "description": "An interactive process viewer.",
-        "install_method": "apt",
-        "install_cmd": ["sudo", "apt", "install", "-y", "htop"],
+        "install_method": "package",
+        "install_cmd": _package_install("htop"),
         "install_shell": False,
     },
 ]
+
+
+
 # ==============================================================================
 
 def check_tools():
@@ -67,8 +83,7 @@ def check_tools():
     uninstalled_tools = []
 
     for tool in TOOLS:
-        # shutil.which is the best way to check if an executable exists in the PATH
-        is_installed = shutil.which(tool["executable"]) is not None
+        is_installed = _is_installed(tool["executable"])
         
         if is_installed:
             status = f"{Colors.GREEN}✔ Installed{Colors.END}"
@@ -82,17 +97,17 @@ def check_tools():
     return uninstalled_tools
 
 def install_tool(tool):
-    """Runs the installation command for a given tool."""
     print(f"\n{Colors.YELLOW}Attempting to install {tool['name']}...{Colors.END}")
-    print(f"Running command: {Colors.BOLD}{tool['install_cmd']}{Colors.END}")
+    if tool['install_cmd'] is None:
+        print("Unknown install command, use your local package manager.")
+        return
+    print(f"Running command: {Colors.BOLD}{" ".join(tool['install_cmd'])}{Colors.END}")
     
     try:
-        # Use subprocess.run to execute the command
-        # `shell=True` is needed for complex scripts, but use with trusted commands
         result = subprocess.run(
             tool['install_cmd'],
             shell=tool['install_shell'],
-            check=True, # This will raise an exception if the command fails
+            check=True,
             stdout=sys.stdout,
             stderr=sys.stderr
         )
@@ -127,7 +142,6 @@ def installation_menu(uninstalled_tools):
         elif choice.isdigit() and 1 <= int(choice) <= len(uninstalled_tools):
             tool_to_install = uninstalled_tools[int(choice) - 1]
             install_tool(tool_to_install)
-            # We don't remove from the list, just loop again
             break
         else:
             print(f"{Colors.RED}Invalid choice, please try again.{Colors.END}")

@@ -2,8 +2,9 @@
 import sys
 import shutil
 import subprocess
-from typing import List
+from typing import List, Union
 
+# (Colors class is unchanged)
 class Colors:
     GREEN = '\033[92m'
     YELLOW = '\033[93m'
@@ -15,29 +16,20 @@ class Colors:
 def _is_installed(binary: str) -> bool:
     return shutil.which(binary) is not None
 
-PACKAGE_INSTALL = None
+PACKAGE_INSTALLER = None
 if _is_installed('apt'):
-    PACKAGE_INSTALL = "apt install"
+    PACKAGE_INSTALLER = "apt install"
 elif _is_installed('dnf'):
-    PACKAGE_INSTALL = "dnf install"
+    PACKAGE_INSTALLER = "dnf install"
 
-def _package_install(executable: str) -> List[str] | None:
-    if PACKAGE_INSTALL is None:
+def _package_install(executable: str) -> Union[List[str], None]:
+    if PACKAGE_INSTALLER is None:
         return None
-    return ["sudo"] + PACKAGE_INSTALL.split(" ") + [executable]
+    return ["sudo"] + PACKAGE_INSTALLER.split(" ") + [executable]
 
 # ==============================================================================
 # === TOOLS ====================================================================
 # ==============================================================================
-#
-# - name:           The display name of the tool.
-# - executable:     The command name to check for on the system's PATH.
-# - description:    A short reminder of what it does.
-# - install_method: A label for the installation type (e.g., 'apt', 'script').
-# - install_cmd:    The command to run for installation.
-# - install_shell:  Set to True for complex commands that need a shell,
-#                   like one-liners with pipes or redirects. Be cautious.
-#
 TOOLS = [
     {
         "name": "ncdu",
@@ -51,9 +43,11 @@ TOOLS = [
         "name": "dops",
         "executable": "dops",
         "description": "A tool for interacting with DigitalOcean droplets.",
-        "install_method": "package",
-        "install_cmd": 'sudo wget "https://github.com/Mikescher/better-docker-ps/releases/latest/download/dops_linux-amd64-static" -O "/usr/local/bin/dops" && sudo chmod +x "/usr/local/bin/dops"',
-        "install_shell": True, 
+        "install_method": "script",
+        "install_cmd": [
+            'curl -sL "https://github.com/Mikescher/better-docker-ps/releases/latest/download/dops_linux-amd64-static" | sudo tee /usr/local/bin/dops > /dev/null && sudo chmod +x /usr/local/bin/dops'
+        ],
+        "install_shell": True,
     },
     {
         "name": "tldr",
@@ -72,9 +66,6 @@ TOOLS = [
         "install_shell": False,
     },
 ]
-
-
-
 # ==============================================================================
 
 def check_tools():
@@ -99,13 +90,20 @@ def check_tools():
 def install_tool(tool):
     print(f"\n{Colors.YELLOW}Attempting to install {tool['name']}...{Colors.END}")
     if tool['install_cmd'] is None:
-        print("Unknown install command, use your local package manager.")
+        print(f"{Colors.RED}Unsupported system: No package manager found for this tool.{Colors.END}")
         return
-    print(f"Running command: {Colors.BOLD}{" ".join(tool['install_cmd'])}{Colors.END}")
+
+    cmd_to_run = tool['install_cmd']
+    cmd_for_display = " ".join(cmd_to_run)
     
+    if tool['install_shell']:
+        cmd_to_run = cmd_for_display
+
+    print(f"Running command: {Colors.BOLD}{cmd_for_display}{Colors.END}")
+
     try:
-        result = subprocess.run(
-            tool['install_cmd'],
+        subprocess.run(
+            cmd_to_run,
             shell=tool['install_shell'],
             check=True,
             stdout=sys.stdout,
@@ -115,7 +113,8 @@ def install_tool(tool):
     except subprocess.CalledProcessError as e:
         print(f"{Colors.RED}Installation failed for {tool['name']}. Error: {e}{Colors.END}")
     except FileNotFoundError:
-        print(f"{Colors.RED}Command not found. Is '{tool['install_cmd'][0]}' installed?{Colors.END}")
+        cmd_name = tool['install_cmd'][0] if isinstance(tool['install_cmd'], list) else tool['install_cmd'].split()[0]
+        print(f"{Colors.RED}Command not found. Is '{cmd_name}' installed?{Colors.END}")
     except KeyboardInterrupt:
         print(f"\n{Colors.YELLOW}Installation cancelled by user.{Colors.END}")
         sys.exit(0)

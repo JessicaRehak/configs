@@ -2,6 +2,7 @@
 [user]
 	name = Jessica Rehak
 	email = rehak@lbl.gov
+	signingkey = D4F1D1F6AE94C6D9
 [alias]
 	co = checkout
 	ci = commit
@@ -17,8 +18,13 @@
 	ui = auto
 [core]
 	excludesfile = ~/.global-gitignore
+	editor = vim
 
 [init]
 	defaultBranch = main
 [credential]
 	helper = manager
+[commit]
+	gpgsign = true
+[tag]
+	gpgSign = true

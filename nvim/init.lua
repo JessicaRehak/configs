@@ -653,7 +653,26 @@ require("lazy").setup({
 				-- But for many setups, the LSP (`ts_ls`) will work just fine
 				-- ts_ls = {},
 				--
-				pylsp = {},
+				pylsp = {
+					settings = {
+						pylsp = {
+							plugins = {
+								-- Enable the ruff plugin
+								ruff = {
+									enabled = true,
+								},
+								pycodestyle = { enabled = false },
+								pyflakes = { enabled = false },
+								mccabe = { enabled = false },
+								pylint = { enabled = false },
+								flake8 = { enabled = false },
+								autopep8 = { enabled = false },
+								yapf = { enabled = false },
+								black = { enabled = false },
+							},
+						},
+					},
+				},
 				lua_ls = {
 					-- cmd = { ... },
 					-- filetypes = { ... },
@@ -737,6 +756,7 @@ require("lazy").setup({
 				end
 			end,
 			formatters_by_ft = {
+				python = { "ruff_format", "black" },
 				lua = { "stylua" },
 				-- Conform can also run multiple formatters sequentially
 				-- python = { "isort", "black" },

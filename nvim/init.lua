@@ -200,6 +200,9 @@ vim.keymap.set("n", "<C-j>", "<C-w><C-j>", { desc = "Move focus to the lower win
 vim.keymap.set("n", "<C-k>", "<C-w><C-k>", { desc = "Move focus to the upper window" })
 
 vim.keymap.set("n", "<leader>r", ":set relativenumber!<CR>", { desc = "Toggle [R]elative numbering" })
+vim.keymap.set("n", "<leader>bd", "<CMD>BufferClose<CR>", { desc = "Close current buffer" })
+vim.keymap.set("n", "<leader>ba", "<CMD>BufferCloseAllButVisible<CR>", { desc = "Close all but [v]isible buffers" })
+vim.keymap.set("n", "<leader>lr", "<CMD>LspRestart<CR>", { desc = "[R]estart Lsp" })
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -738,7 +741,7 @@ require("lazy").setup({
 				end
 			end,
 			formatters_by_ft = {
-				python = { "ruff_format" },
+				python = { "ruff_check --fix", "ruff_format" },
 				lua = { "stylua" },
 				-- Conform can also run multiple formatters sequentially
 				-- python = { "isort", "black" },
@@ -807,7 +810,7 @@ require("lazy").setup({
 				-- <c-k>: Toggle signature help
 				--
 				-- See :h blink-cmp-config-keymap for defining your own keymap
-				preset = "default",
+				preset = "enter",
 
 				-- For more advanced Luasnip keymaps (e.g. selecting choice nodes, expansion) see:
 				--    https://github.com/L3MON4D3/LuaSnip?tab=readme-ov-file#keymaps
